@@ -151,8 +151,7 @@ function createComponentJson(componentName, dir, fileName, stylesList) {
 
 	var componentJson = {
 		name: componentName,
-		dependencies: {},
-		script: [fileName]
+		dependencies: {}
 	};
 
 	// adding styles
@@ -175,7 +174,7 @@ function createComponentJson(componentName, dir, fileName, stylesList) {
 			} else {
 				// check in external dependencies
 				var externalDependency = externalDependencies[dependencyName];
-				if (!externalDependency) console.warn('[ERROR] Not found dependency: ' + dependencyName);
+				if (!externalDependency) console.warn('[ERROR] not found dependency: ' + dependencyName);
 				componentJson.dependencies[externalDependency.path] = externalDependency.components;
 			}
 		}
@@ -183,16 +182,18 @@ function createComponentJson(componentName, dir, fileName, stylesList) {
 
 	// converting to array
 	var k;
-	for (k in pathsObj) paths.push(k);
 	for (k in localObj) local.push(k);
+	for (k in pathsObj) paths.push(k);
 
-	if (paths.length > 0) componentJson.paths = paths;
 	if (local.length > 0) componentJson.local = local;
+	if (paths.length > 0) componentJson.paths = paths;
+
+	componentJson.scripts = [fileName];
 
 	// write component.json file in directory
 	var jsonPath = path.join(rootDir, dir, 'component.json');
 	console.log("writting : " + jsonPath);
-	fs.writeFileSync(jsonPath, JSON.stringify(componentJson, null, 4), { encoding: 'utf8' });
+	fs.writeFileSync(jsonPath, JSON.stringify(componentJson, null, '\t'), { encoding: 'utf8' });
 }
 
 
@@ -220,6 +221,4 @@ getComponentList('');
 console.log('Extracting component.json files...');
 extractComponentJson(componentsToParse);
 console.log('Done.');
-
-
 
